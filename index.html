@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>小小九型 · 0–5歲氣質觀察平台</title>
+<style>
+:root{--bg:#faf6ef;--card:#ffffff;--ink:#3a3226;--muted:#8a7d68;--acc:#c96f4a;--acc2:#2f5d5a;--line:#e8dfd0;--soft:#f3ecdd;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:"Noto Sans TC","PingFang HK","Microsoft JhengHei",system-ui,sans-serif;line-height:1.75;-webkit-font-smoothing:antialiased}
+.wrap{max-width:720px;margin:0 auto;padding:20px 16px 80px}
+header.top{text-align:center;padding:28px 0 18px}
+header.top .kicker{display:inline-block;background:var(--acc2);color:#fff;font-size:13px;padding:4px 14px;border-radius:20px;letter-spacing:2px;margin-bottom:12px}
+header.top h1{font-size:30px;letter-spacing:1px}
+header.top p{color:var(--muted);font-size:15px;margin-top:6px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px;margin:16px 0;box-shadow:0 2px 10px rgba(120,90,40,.06)}
+.card h2{font-size:20px;margin-bottom:10px;color:var(--acc2)}
+.card h3{font-size:17px;margin:14px 0 6px;color:var(--acc)}
+.btn{display:inline-block;background:var(--acc);color:#fff;border:none;border-radius:14px;padding:14px 34px;font-size:17px;cursor:pointer;letter-spacing:1px;margin-top:8px}
+.btn:hover{filter:brightness(1.06)}
+.btn.ghost{background:#fff;color:var(--acc2);border:2px solid var(--acc2)}
+.btn:disabled{opacity:.4;cursor:default}
+.center{text-align:center}
+.muted{color:var(--muted);font-size:14px}
+.field{margin:12px 0}
+.field label{display:block;font-size:15px;margin-bottom:6px}
+.field input{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;font-size:16px;background:#fffdf8}
+.field input:focus{outline:none;border-color:var(--acc)}
+.screen{display:none}.screen.on{display:block;animation:fade .3s}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1}}
+.progress{height:10px;background:var(--soft);border-radius:6px;overflow:hidden;margin:8px 0 4px}
+.progress i{display:block;height:100%;background:linear-gradient(90deg,var(--acc),#e09a6c);border-radius:6px;transition:width .3s}
+.qnum{font-size:13px;color:var(--muted);letter-spacing:1px}
+.qtext{font-size:20px;margin:10px 0 18px;font-weight:600}
+.likert{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.likert button{border:2px solid var(--line);background:#fffdf8;border-radius:14px;padding:12px 4px;cursor:pointer;font-size:15px;transition:all .15s}
+.likert button small{display:block;font-size:11px;color:var(--muted);margin-top:2px}
+.likert button.sel{background:var(--acc);border-color:var(--acc);color:#fff}
+.likert button.sel small{color:#ffe9d9}
+.qnav{display:flex;justify-content:space-between;margin-top:22px}
+.dimtag{display:inline-block;font-size:12px;background:var(--soft);color:var(--muted);border-radius:10px;padding:2px 10px;margin-bottom:4px}
+.bars .bar{margin:10px 0}
+.bars .blabel{display:flex;justify-content:space-between;font-size:15px;margin-bottom:4px}
+.bars .track{height:12px;background:var(--soft);border-radius:7px;overflow:hidden}
+.bars .fill{height:100%;background:linear-gradient(90deg,var(--acc2),#5b8a87);border-radius:7px}
+.triad{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.chip{background:var(--soft);border-radius:12px;padding:8px 14px;font-size:14px}
+.chip b{color:var(--acc2)}
+.typecard{border-left:5px solid var(--acc);padding:4px 0 4px 16px;margin:18px 0}
+.typecard h3{font-size:19px;color:var(--ink);margin:0 0 4px}
+.kv{margin:8px 0;font-size:15px}
+.kv b{color:var(--acc2)}
+.msg{background:#fff8ef;border:1.5px dashed var(--acc);border-radius:14px;padding:14px 18px;margin:14px 0;font-size:16px}
+.msg b{color:var(--acc)}
+.warn{background:#fdf3e7;border:1px solid #ecd9b8;border-radius:14px;padding:14px 18px;font-size:14px;color:#7a5c2e;margin:16px 0}
+svg.radar{width:100%;height:auto;max-width:420px;display:block;margin:0 auto}
+footer{margin-top:30px;text-align:center;color:var(--muted);font-size:13px}
+ul.clean{padding-left:20px}ul.clean li{margin:6px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <div class="kicker">0–5 歲專屬</div>
+  <h1>小小九型 · 氣質觀察</h1>
+  <p>由照顧者觀察記錄，認識孩子當下嘅行為氣質</p>
+</header>
+
+<!-- ============ WELCOME ============ -->
+<section id="s-welcome" class="screen on">
+  <div class="card">
+    <h2>呢個測驗唔同喺邊？</h2>
+    <ul class="clean">
+      <li>市面嘅九型人格測驗係為大人設計：要自我反思、答 180 題是非題。五歲前嘅孩子做唔到。</li>
+      <li>呢度反轉嚟做：<b>由爸爸媽媽（主要照顧者）客觀觀察</b>孩子日常嘅氣質同行為，再對應九型人格嘅底層邏輯。</li>
+      <li>題目根據發展心理學家 Thomas &amp; Chess 嘅「嬰幼兒九大氣質向度」設計，1–5 分評分，唔係非黑即白。</li>
+      <li>計分用加權矩陣，再以三組三元組（霍妮維安／和諧／客體關係）交叉驗證。</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h2>開始之前，請先知道</h2>
+    <p>五歲前嘅大腦仲喺高速發展，今日嘅氣質唔等於將來嘅性格。所以呢份報告<b>唔會話「你個仔係第幾型」</b>，只會講「孩子目前強烈展現出邊種行為氣質」——目的係畀父母一面鏡，調整教養方式，唔係畀孩子貼標籤。</p>
+  </div>
+  <div class="card">
+    <h2>孩子小檔案</h2>
+    <div class="field"><label>小名（只會出現喺報告入面）</label><input id="in-name" placeholder="例如：小翼" maxlength="12"></div>
+    <div class="field"><label>年齡</label><input id="in-age" type="number" min="0" max="5" step="1" placeholder="0–5 歲"></div>
+    <div class="center"><button class="btn" id="btn-start">開始 27 題觀察問卷</button></div>
+    <p class="muted center" style="margin-top:10px" id="resume-line" hidden>偵測到上次未完成嘅進度 <button class="btn ghost" id="btn-resume" style="padding:8px 18px;font-size:14px">繼續上次</button></p>
+  </div>
+  <footer>小小九型 · 觀察版 ｜ 結果僅供親子教養參考，唔係臨床診斷</footer>
+</section>
+
+<!-- ============ QUIZ ============ -->
+<section id="s-quiz" class="screen">
+  <div class="card">
+    <div class="qnum" id="q-num">第 1 / 27 題</div>
+    <div class="progress"><i id="q-bar" style="width:0%"></i></div>
+    <div style="height:10px"></div>
+    <span class="dimtag" id="q-dim">活動量</span>
+    <div class="qtext" id="q-text"></div>
+    <div class="likert" id="q-likert"></div>
+    <div class="qnav">
+      <button class="btn ghost" id="q-prev">← 上一題</button>
+      <button class="btn" id="q-next" disabled>下一題 →</button>
+    </div>
+    <p class="muted center" style="margin-top:12px">作答會自動儲存，隨時可以離開再返嚟繼續</p>
+  </div>
+</section>
+
+<!-- ============ RESULT ============ -->
+<section id="s-result" class="screen">
+  <div class="card center">
+    <h2 id="r-headline"></h2>
+    <p class="muted" id="r-sub"></p>
+    <svg class="radar" id="r-radar" viewBox="0 0 340 340"></svg>
+  </div>
+  <div class="card">
+    <h2>九型氣質強度</h2>
+    <div class="bars" id="r-bars"></div>
+  </div>
+  <div class="card">
+    <h2>三元組交叉驗證</h2>
+    <p class="muted">三組獨立分類互相印證，睇下邊個宏觀傾向最吻合：</p>
+    <div id="r-triads"></div>
+  </div>
+  <div class="card">
+    <h2>傾向最強嘅三種氣質 · 深度解讀</h2>
+    <div id="r-types"></div>
+  </div>
+  <div class="warn">⚠️ 重要提醒：五歲前嘅氣質係流動嘅「暫時性應對策略」，唔係終身標籤。請用呢份報告去理解同調整教養方式，而唔係用嚟定義孩子。如果對孩子嘅發展有擔憂，請諮詢兒科醫生或兒童心理專業人士。</div>
+  <div class="center"><button class="btn ghost" id="btn-restart">重新測驗</button></div>
+  <footer>小小九型 · 觀察版 ｜ 結果僅供親子教養參考，唔係臨床診斷</footer>
+</section>
+
+</div>
+<script>
+"use strict";
+/* ================= 題庫：Thomas & Chess 九大氣質向度 × 3 題 =================
+   rev:false → 5分=該向度「高」；rev:true → 5分=該向度「低」（反向題） */
+const QUESTIONS=[
+{dim:"activity",text:"孩子清醒時大部分時間都在郁動，好少安靜坐定。",rev:false},
+{dim:"activity",text:"就算喺室內，孩子都鍾意跑來跑去、用身體探索環境。",rev:false},
+{dim:"activity",text:"孩子可以安靜坐定、專心玩同一樣玩具好耐。",rev:true},
+{dim:"rhythmicity",text:"孩子每日食飯、瞓覺嘅時間都好固定，容易預測。",rev:false},
+{dim:"rhythmicity",text:"作息被打亂嗰陣，孩子會明顯焦慮或者扭計。",rev:false},
+{dim:"rhythmicity",text:"孩子幾時肚餓、幾時眼瞓都唔太固定。",rev:true},
+{dim:"approach",text:"見到陌生人或者去到新環境，孩子會主動行近、好奇接觸。",rev:false},
+{dim:"approach",text:"第一次食未食過嘅嘢，孩子都肯試。",rev:false},
+{dim:"approach",text:"去到新地方，孩子會先匿埋喺爸媽身後觀察。",rev:true},
+{dim:"adaptability",text:"轉咗新規矩或者新環境，孩子好快就適應到。",rev:false},
+{dim:"adaptability",text:"生活上有改變（例如轉照顧者、搬屋），孩子要好耐先接受到。",rev:true},
+{dim:"adaptability",text:"做緊嘅嘢俾人打斷之後，孩子可以較快調整、轉去做新嘅活動。",rev:false},
+{dim:"intensity",text:"孩子開心或者嬲嗰陣，情緒表達都好激烈、好戲劇性。",rev:false},
+{dim:"intensity",text:"孩子喊起上嚟聲量好大，好難安撫。",rev:false},
+{dim:"intensity",text:"孩子多數時間情緒平穩，就算唔開心都表現得淡淡然。",rev:true},
+{dim:"threshold",text:"孩子對聲、光或者人哋嘅情緒好敏感，好易被嚇親或者「超載」。",rev:true},
+{dim:"threshold",text:"好輕微嘅環境變化（例如房入面嘅嘢郁咗位），孩子都會察覺。",rev:true},
+{dim:"threshold",text:"要好大動靜先至引起到孩子注意。",rev:false},
+{dim:"mood",text:"整體嚟講，孩子成日都好開心、鍾意笑。",rev:false},
+{dim:"mood",text:"孩子成日都好似好嚴肅、好易喊或者好炆憎。",rev:true},
+{dim:"mood",text:"同孩子玩嗰陣，佢多數俾人友善開朗嘅感覺。",rev:false},
+{dim:"distract",text:"孩子玩緊嘢嗰陣，一啲聲就會俾出面吸引走注意力。",rev:false},
+{dim:"distract",text:"孩子好難專心做完一件事，成日轉嚟轉去。",rev:false},
+{dim:"distract",text:"孩子玩起上嚟好投入，出面發生咩事都唔多理。",rev:true},
+{dim:"persist",text:"遇到困難（例如砌圖砌唔到），孩子會堅持再試，唔輕易放棄。",rev:false},
+{dim:"persist",text:"孩子為咗想要嘅嘢會纏好耐，唔達目的唔罷休。",rev:false},
+{dim:"persist",text:"稍為受挫孩子就放棄，轉去做第二樣嘢。",rev:true},
+];
+const DIMNAME={activity:"活動量",rhythmicity:"規律性",approach:"趨避性",adaptability:"適應度",intensity:"反應強度",threshold:"反應閾",mood:"情緒本質",distract:"分心度",persist:"堅持度"};
+/* 每個向度嘅「高／低」對應邊幾型（綜合 Naranjo / Riso-Hudson 氣質映射） */
+const DIMMAP={
+activity:{high:[7,8,3],low:[5,9]},
+rhythmicity:{high:[1,6],low:[7,4]},
+approach:{high:[7,2,3],low:[5,6,4]},
+adaptability:{high:[3,9],low:[1,4,6]},
+intensity:{high:[8,4,6],low:[9,5]},
+threshold:{high:[8,9],low:[5,4,1]},
+mood:{high:[7,9,2],low:[4,1,6]},
+distract:{high:[7,9],low:[1,5]},
+persist:{high:[1,3,8],low:[7,9]},
+};
+</script>
+<script>
+/* ================= 九型人格檔案（0–5歲觀察版） ================= */
+const TYPES={
+1:{name:"第一型",title:"改革者",origin:"童年可能經歷過嚴厲批評，或者成日覺得自己「唔夠好」；有啲孩子好細個就要孭起超出年齡嘅責任。",
+fear:"變壞、有缺陷、做錯。",defense:"將嚴厲嘅照顧者形象內化成「內心批評家」；壓抑衝動同玩心，靠追求完美嚟證明自己值得被愛。",
+soul:"第七型 — 最早期其實係個追求快樂、無拘無束嘅孩子，只係呢份天真被環境否定咗。",
+lost:"「你是好的。」—— 犯錯都係安全嘅。",
+advice:"俾絕對嘅包容：先肯定佢個人，再講件事。刻意留啲「唔完美都得」嘅空間，等佢敢玩、敢試、敢錯。"},
+2:{name:"第二型",title:"助人者",origin:"潛意識學識咗「幫到人先至值得被愛」；可能好細個就做咗屋企嘅小幫手，用付出換關注。",
+fear:"唔被愛、唔被需要、冇價值。",defense:"收起自己嘅需要同情緒，全神貫注探測人哋想要咩，用不斷付出來換取歸屬感。",
+soul:"第四型 — 無私面具底下，係個渴望被關注、好在意自己感受嘅孩子。",
+lost:"「你本身就值得被愛，唔使靠付出嚟換。」",
+advice:"主動問佢想要咩，教佢講「不」；多謝佢幫手之餘，更要喺佢「乜都冇做」嗰陣都錫佢，等佢知愛唔係交易。"},
+3:{name:"第三型",title:"成就者",origin:"價值感建築喺表現上面；真實感受被忽略，讚賞永遠俾咗個「做得好」嘅面具。",
+fear:"失敗、俾人睇穿自己唔得。",defense:"收埋真實自我，戴上光鮮亮麗嘅面具，用外界嘅欽佩代替真實嘅愛。",
+soul:"第六型 — 自信滿滿背後，係個焦慮、充滿自我懷疑嘅小孩。",
+lost:"「你因為係你自己而被愛，唔係因為你做到咩。」",
+advice:"唔好只讚成就；喺佢失敗、冇表現嗰陣俾無條件嘅擁抱。多問「你今日開唔開心」，少問「你攞咗幾多分」。"},
+4:{name:"第四型",title:"個人主義者",origin:"覺得同父母格格不入、唔被理解，情感上好似斷咗線；於是認定自己天生「爭咗啲嘢」。",
+fear:"冇自我、淪為平庸。",defense:"轉向內心世界尋求獨特性，用「與眾不同」嚟填補缺陷感。",
+soul:"第一型 — 情緒化外表下，係個想做好、想有規矩卻又覺得自己做唔好嘅孩子。",
+lost:"「你而家咁樣，已經被清楚睇到、被愛。」",
+advice:"認真對待佢強烈嘅情緒，唔好笑佢誇張；俾穩定嘅情感鏡像回應，等佢知有人真係明佢。"},
+5:{name:"第五型",title:"探究者",origin:"照顧者可能太冷漠、缺乏互動，或者太侵入、控制慾太強；孩子學識起牆自保。",
+fear:"無能、要依賴人、精力俾人榨乾。",defense:"切斷情感連結，將注意力同能量全部撤退到安全嘅心智世界。",
+soul:"第八型 — 退縮安靜背後，係個地盤意識強、好有主見嘅小孩。",
+lost:"「你嘅需要唔係麻煩。」",
+advice:"極度尊重佢嘅物理同心理空間，唔好逼即刻交流；佢準備好嗰陣先溫柔邀請，等佢自己行出嚟。"},
+6:{name:"第六型",title:"忠誠者",origin:"環境充滿不可預測：父母情緒唔穩或者成日變；想信大人又唔敢信。",
+fear:"失去支持同指引。",defense:"不斷掃描環境入面嘅潛在威脅，諗晒最壞情況，靠懷疑嚟搵安全感。",
+soul:"第九型 — 焦慮緊繃背後，渴望嘅係完全放鬆、充滿和平同信任嘅狀態。",
+lost:"「你是安全的。」",
+advice:"規律同可預測性係定心丸；承諾過嘅嘢一定要做到；溫柔而重複地保證，唔好嫌佢煩。"},
+7:{name:"第七型",title:"活躍者",origin:"可能太早失去咗某種滋養同連結；學識用新奇刺激分散注意力，填補內心嘅空虛。",
+fear:"被剝奪、陷入痛苦。",defense:"不停搵新玩具、新活動，用外在刺激壓住內心嘅不安，逃避唔舒服嘅感覺。",
+soul:"第五型 — 精力充沛背後，係個深思熟慮、唔知點樣停低嘅孩子。",
+lost:"「你將會被照顧。」",
+advice:"唔好無限滿足佢對刺激嘅索求；溫柔陪佢喺唔舒服嘅感覺入面停一陣，等佢親身知：唔逃避，痛苦都頂得順。"},
+8:{name:"第八型",title:"挑戰者",origin:"喺唔安全、有壓迫嘅環境大，學識咗「露弱點就會俾人恰」，童年被迫提早結束。",
+fear:"軟弱、俾人控制、受傷害。",defense:"將柔軟深埋，發展出強悍對抗嘅外殼，用力量代替對愛嘅渴求。",
+soul:"第二型 — 巨大盔甲底下，係個極渴望被愛、好在意人哋眼光嘅小孩。",
+lost:"「你唔會被背叛。」",
+advice:"千祈唔好同佢鬥力，鬥只會令甲更厚；創造絕對安全嘅環境，用行動證明呢度唔會出賣佢，等佢敢除甲。"},
+9:{name:"第九型",title:"和平者",origin:"覺得自己被忽略，或者屋企成日嗌交；學識收聲、收埋需要，換取表面和諧。",
+fear:"衝突、被遺忘、失去連結。",defense:"心理麻木同抽離，將自己嘅需求同存在感縮到最小，靠「冇所謂」維持和平。",
+soul:"第三型 — 隨和唔爭背後，係個好想發光、好想做到嘢嘅靈魂。",
+lost:"「你嘅存在好重要，你嘅意見有價值。」",
+advice:"主動問佢意見，唔好因為佢「乖、易湊」就當佢冇嘢；等佢知：有分歧唔等於世界末日，佢把聲值得被聽到。"},
+};
+/* ================= 三元組 ================= */
+const TRIADS=[
+{group:"霍妮維安三元組",desc:"想要嘢嗰陣嘅策略",cats:{"堅定型":[3,7,8],"順從型":[1,2,6],"退縮型":[4,5,9]},
+ note:{"堅定型":"直接爭取：想要就去攞","順從型":"做好孩子：乖巧換取","退縮型":"縮入自己：轉向幻想世界"}},
+{group:"和諧三元組",desc:"受挫嗰陣嘅反應",cats:{"正向展望":[2,7,9],"能力型":[1,3,5],"反應型":[4,6,8]},
+ note:{"正向展望":"轉移注意：搵開心嘢","能力型":"解決問題：做好佢做啱佢","反應型":"強烈表達：嬲就爆"}},
+{group:"客體關係三元組",desc:"同照顧者嘅關係模式",cats:{"依附型":[3,6,9],"挫折型":[1,4,7],"拒絕型":[2,5,8]},
+ note:{"依附型":"跟住期望：適應大人","挫折型":"永不滿足：向外向內搵","拒絕型":"切斷自保：唔信唔理"}},
+];
+</script>
+<script>
+/* ================= 應用邏輯 ================= */
+const LSKEY="ennea_kids_v1";
+const state={name:"",age:"",answers:Array(QUESTIONS.length).fill(0),idx:0};
+const $=id=>document.getElementById(id);
+const LIKERT=[["1","從不"],["2","很少"],["3","有時"],["4","經常"],["5","總是"]];
+function show(id){document.querySelectorAll(".screen").forEach(s=>s.classList.remove("on"));$(id).classList.add("on");window.scrollTo(0,0);}
+function save(){try{localStorage.setItem(LSKEY,JSON.stringify({name:state.name,age:state.age,answers:state.answers,idx:state.idx}));}catch(e){}}
+function load(){try{const d=JSON.parse(localStorage.getItem(LSKEY));if(d&&d.answers&&d.answers.length===QUESTIONS.length)return d;}catch(e){}return null;}
+/* ---- 問卷流程 ---- */
+function renderQ(){
+  const i=state.idx,q=QUESTIONS[i];
+  $("q-num").textContent=`第 ${i+1} / ${QUESTIONS.length} 題`;
+  $("q-bar").style.width=Math.round(i/QUESTIONS.length*100)+"%";
+  $("q-dim").textContent=DIMNAME[q.dim];
+  $("q-text").textContent=q.text;
+  const box=$("q-likert");box.innerHTML="";
+  LIKERT.forEach(([v,lab])=>{
+    const b=document.createElement("button");
+    b.innerHTML=`${v}<small>${lab}如此</small>`;
+    if(state.answers[i]==+v)b.classList.add("sel");
+    b.onclick=()=>{state.answers[i]=+v;save();renderQ();};
+    box.appendChild(b);
+  });
+  $("q-next").disabled=!state.answers[i];
+  $("q-next").textContent=(i===QUESTIONS.length-1)?"睇結果 →":"下一題 →";
+  $("q-prev").disabled=(i===0);
+}
+$("q-prev").onclick=()=>{if(state.idx>0){state.idx--;save();renderQ();}};
+$("q-next").onclick=()=>{
+  if(!state.answers[state.idx])return;
+  if(state.idx<QUESTIONS.length-1){state.idx++;save();renderQ();}
+  else{save();showResult();}
+};
+$("btn-start").onclick=()=>{
+  state.name=$("in-name").value.trim();
+  state.age=$("in-age").value.trim();
+  if(!state.name){alert("請填小名，報告會親切啲 🙂");return;}
+  if(state.age===""||+state.age<0||+state.age>5){alert("請填 0–5 歲之間嘅年齡");return;}
+  state.answers=Array(QUESTIONS.length).fill(0);state.idx=0;save();
+  show("s-quiz");renderQ();
+};
+$("btn-restart").onclick=()=>{if(confirm("確定重新測驗？舊結果會被覆蓋。")){localStorage.removeItem(LSKEY);location.reload();}};
+(function init(){
+  const d=load();
+  if(d&&d.answers.some(a=>a>0)){
+    $("resume-line").hidden=false;
+    $("btn-resume").onclick=()=>{
+      state.name=d.name||"";state.age=d.age||"";state.answers=d.answers;state.idx=d.idx||0;
+      $("in-name").value=state.name;$("in-age").value=state.age;
+      show("s-quiz");renderQ();
+    };
+  }
+})();
+/* ---- 加權計分 ---- */
+function computeScores(){
+  const contrib=Array(10).fill(0),links=Array(10).fill(0);
+  QUESTIONS.forEach((q,i)=>{
+    const a=state.answers[i];if(!a)return;
+    const r=q.rev?6-a:a;
+    const h=(r-1)/4,l=(5-r)/4,m=DIMMAP[q.dim];
+    m.high.forEach(t=>{contrib[t]+=h;links[t]++;});
+    m.low.forEach(t=>{contrib[t]+=l;links[t]++;});
+  });
+  const s={};for(let t=1;t<=9;t++)s[t]=links[t]?Math.round(contrib[t]/links[t]*100):0;
+  return s;
+}
+/* ---- 雷達圖 ---- */
+function radarSVG(scores){
+  const C=170,R=130,cx=170,cy=170;
+  const pt=(t,val)=>{const ang=(-90+(t-1)*40)*Math.PI/180;const r=R*val/100;return[cx+r*Math.cos(ang),cy+r*Math.sin(ang)];};
+  let g="";
+  [25,50,75,100].forEach(v=>{let p=[];for(let t=1;t<=9;t++)p.push(pt(t,v).map(n=>n.toFixed(1)).join(","));g+=`<polygon points="${p.join(" ")}" fill="none" stroke="#e8dfd0" stroke-width="1"/>`;});
+  for(let t=1;t<=9;t++){const[x,y]=pt(t,100);g+=`<line x1="${cx}" y1="${cy}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" stroke="#e8dfd0"/>`;
+    const[lx,ly]=pt(t,122);const tp=TYPES[t];
+    g+=`<text x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="middle" font-size="12.5" fill="#3a3226">${t}·${tp.title}</text>`;}
+  let p=[];for(let t=1;t<=9;t++)p.push(pt(t,scores[t]).map(n=>n.toFixed(1)).join(","));
+  g+=`<polygon points="${p.join(" ")}" fill="rgba(201,111,74,.25)" stroke="#c96f4a" stroke-width="2.5"/>`;
+  for(let t=1;t<=9;t++){const[x,y]=pt(t,scores[t]);g+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="4" fill="#c96f4a"/>`;}
+  return g;
+}
+/* ---- 結果頁 ---- */
+function showResult(){
+  const scores=computeScores();
+  const ranked=Object.keys(scores).map(Number).sort((a,b)=>scores[b]-scores[a]);
+  const top=ranked[0],nm=state.name||"孩子";
+  $("r-headline").textContent=`${nm}目前強烈展現出「第${top}型 · ${TYPES[top].title}」嘅行為氣質`;
+  $("r-sub").textContent="記住：呢個係當下嘅氣質傾向，唔係終身標籤。";
+  $("r-radar").innerHTML=radarSVG(scores);
+  const bars=$("r-bars");bars.innerHTML="";
+  ranked.forEach(t=>{
+    const row=document.createElement("div");row.className="bar";
+    row.innerHTML=`<div class="blabel"><span>第${t}型 · ${TYPES[t].title}</span><span>${scores[t]}%</span></div><div class="track"><div class="fill" style="width:${scores[t]}%"></div></div>`;
+    bars.appendChild(row);
+  });
+  const tri=$("r-triads");tri.innerHTML="";
+  TRIADS.forEach(tr=>{
+    const cs=Object.entries(tr.cats).map(([n,ts])=>({n,v:Math.round(ts.reduce((s,t)=>s+scores[t],0)/ts.length)}));
+    cs.sort((a,b)=>b.v-a.v);
+    const div=document.createElement("div");div.style.margin="12px 0";
+    div.innerHTML=`<b>${tr.group}</b> <span class="muted">（${tr.desc}）</span><div class="triad">`+
+      cs.map(c=>`<span class="chip"><b>${c.n}</b> ${c.v}%<br><span class="muted" style="font-size:12px">${tr.note[c.n]}</span></span>`).join("")+`</div>`;
+    tri.appendChild(div);
+  });
+  const tc=$("r-types");tc.innerHTML="";
+  ranked.slice(0,3).forEach((t,ix)=>{
+    const p=TYPES[t],d=document.createElement("div");d.className="typecard";
+    d.innerHTML=`<h3>${ix+1}. 第${t}型 · ${p.title} <span class="muted">（強度 ${scores[t]}%）</span></h3>
+    <div class="kv"><b>童年起源：</b>${p.origin}</div>
+    <div class="kv"><b>核心恐懼：</b>${p.fear}</div>
+    <div class="kv"><b>防禦機制：</b>${p.defense}</div>
+    <div class="kv"><b>靈魂孩童：</b>${p.soul}</div>
+    <div class="msg">💌 失落的訊息：<b>${p.lost}</b></div>
+    <div class="kv"><b>給父母的建議：</b>${p.advice}</div>`;
+    tc.appendChild(d);
+  });
+  try{localStorage.removeItem(LSKEY);}catch(e){}
+  show("s-result");
+}
+</script>
+</body>
+</html>
